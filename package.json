@@ -1,0 +1,20 @@
+{
+  "name": "tween-fn",
+  "version": "1.0.0",
+  "description": "A lightweight animation library which focuses on providing an expressive functional API to compose complex animations without assuming anything about your application",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha -r ts-node/register __tests__.ts"
+  },
+  "author": "Manuel Aljibes Rosas <manuelaljibesrosas@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/mocha": "^8.2.1",
+    "@types/node": "^14.14.28",
+    "chai": "^4.3.3",
+    "mocha": "^8.3.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}
