@@ -3,7 +3,8 @@
     "lib": ["es2015", "es2019.Array", "DOM"],
     "types": ["node", "mocha"],
     "esModuleInterop": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "strict": true
   },
   "files": ["index.ts"]
 }

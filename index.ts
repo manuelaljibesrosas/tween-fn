@@ -3,14 +3,14 @@ const noop = () => {};
 type easingFn = (x: number) => number;
 
 const easings = {
-  LINEAR: (x) => x,
-  SQUARED: (x) => Math.pow(x, 2),
-  CUBIC: (x) => Math.pow(x, 3),
-  QUART: (x) => Math.pow(x, 4),
-  QUINT: (x) => Math.pow(x, 5),
-  EASE_OUT_QUINT: (x) => 1 - Math.pow(1 - x, 5),
-  EASE_IN_OUT_QUINT: (x) => x < 0.5 ? 16 * Math.pow(x, 5) : 1 - Math.pow(-2 * x + 2, 5) / 2,
-  EASE_OUT_ELASTIC: (x) => {
+  LINEAR: (x: number) => x,
+  SQUARED: (x: number) => Math.pow(x, 2),
+  CUBIC: (x: number) => Math.pow(x, 3),
+  QUART: (x: number) => Math.pow(x, 4),
+  QUINT: (x: number) => Math.pow(x, 5),
+  EASE_OUT_QUINT: (x: number) => 1 - Math.pow(1 - x, 5),
+  EASE_IN_OUT_QUINT: (x: number) => x < 0.5 ? 16 * Math.pow(x, 5) : 1 - Math.pow(-2 * x + 2, 5) / 2,
+  EASE_OUT_ELASTIC: (x: number) => {
     const c4 = (2 * Math.PI) / 3;
 
     return x === 0
@@ -35,9 +35,9 @@ interface TweenOptions {
   delay?: number;
   duration?: number;
   ease?: easingFn;
-  begin?: (meta?: object | null) => void;
-  update?: (y: number, meta?: object | null) => void;
-  complete?: (y: number, meta?: object | null) => void;
+  begin?: (meta?: object) => void;
+  update?: (y?: number, meta?: object) => void;
+  complete?: (y?: number, meta?: object) => void;
   change?: (y?: number, meta?: object) => void;
   loop?: (y?: number, meta?: object) => void;
   meta?: object;
@@ -55,10 +55,10 @@ class Tween {
   delay: number;
   duration: number;
   ease: easingFn;
-  begin: (meta?: object | null) => void;
-  update: (y: number, meta?: object | null) => void;
-  complete: (y: number, meta?: object | null) => void;
-  change?: (y?: number, meta?: object) => void;
+  begin: (meta?: object) => void;
+  update: (y?: number, meta?: object) => void;
+  complete: (y?: number, meta?: object) => void;
+  change: (y?: number, meta?: object) => void;
   loop: (y?: number, meta?: object) => void;
   meta: object;
 
@@ -135,7 +135,7 @@ class TweenPair extends Tween {
   a: Tween;
   b: Tween;
 
-  constructor(a, b, opts?: TweenOptions) {
+  constructor(a: Tween, b: Tween, opts?: TweenOptions) {
     super(opts);
     this.a = a;
     this.b = b;
@@ -158,25 +158,23 @@ class TweenPair extends Tween {
     if (!this.b.completed)
       this.b.tick(elapsed);
 
-    if (this.a.completed && this.b.completed) {
-      this.complete(0, null);
+    if (this.a.completed && this.b.completed)
       this.completed = true;
-    }
   }
 }
 
 class Subscription {
-  id: number;
+  id: number = 0;
   unsubscribe = () => cancelAnimationFrame(this.id);
 }
 
-const unit = (options) => (
+const unit = (options: TweenOptions) => (
   new Tween(options)
 );
-const merge = (a, b) => (
+const merge = (a: Tween, b: Tween) => (
   new TweenPair(a, b)
 );
-const mergeAll = (ts) => ts.reduce((acc, cur) => merge(acc, cur));
+const mergeAll = (ts: Array<Tween>) => ts.reduce((acc, cur) => merge(acc, cur));
 const sequence = (ts: Array<Tween>): Tween => mergeAll(ts.map((t, i) => {
   if (i === 0)
     return t;
@@ -218,12 +216,16 @@ const computeTransform = (target: string, transform: string): string => (
 );
 
 // interpolation utils
-const interpolate = (progress: number, from: number, to: number): number => (
+const interpolate = (progress: number, from: number, to: number) => (
   from + ((to - from) * progress)
 );
-const interpolateArray = (progress, from, to) => from.map((a, i) => (
-  interpolate(progress, a, to[i])
-));
+const interpolateArray = (
+  progress: number,
+  from: Array<number>,
+  to: Array<number>,
+): Array<number> => (
+  from.map((a, i) => interpolate(progress, a, to[i]))
+);
 
 // path utils
 type Path = string;
