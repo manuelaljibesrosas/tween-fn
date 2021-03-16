@@ -1,7 +1,21 @@
 {
   "name": "tween-fn",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A lightweight animation library which focuses on providing an expressive functional API to compose complex animations without assuming anything about your application",
+  "keywords": [
+    "animation",
+    "tween",
+    "tween-fn",
+    "motion",
+    "transition"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manuelaljibesrosas/tween-fn"
+  },
+  "bugs": {
+    "url": "https://github.com/manuelaljibesrosas/tween-fn/issues"
+  },
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
