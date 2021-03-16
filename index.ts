@@ -35,11 +35,11 @@ interface TweenOptions {
   delay?: number;
   duration?: number;
   ease?: easingFn;
-  begin?: (meta?: object) => void;
-  update?: (y?: number, meta?: object) => void;
-  complete?: (y?: number, meta?: object) => void;
-  change?: (y?: number, meta?: object) => void;
-  loop?: (y?: number, meta?: object) => void;
+  begin?: (meta?: any) => void;
+  update?: (y: number, meta?: any) => void;
+  complete?: (y: number, meta?: any) => void;
+  change?: (y: number, meta?: any) => void;
+  loop?: (y: number, meta?: any) => void;
   meta?: object;
 }
 
@@ -55,11 +55,11 @@ class Tween {
   delay: number;
   duration: number;
   ease: easingFn;
-  begin: (meta?: object) => void;
-  update: (y?: number, meta?: object) => void;
-  complete: (y?: number, meta?: object) => void;
-  change: (y?: number, meta?: object) => void;
-  loop: (y?: number, meta?: object) => void;
+  begin: (meta?: any) => void;
+  update: (y: number, meta?: any) => void;
+  complete: (y: number, meta?: any) => void;
+  change: (y: number, meta?: any) => void;
+  loop: (y: number, meta?: any) => void;
   meta: object;
 
   constructor(options: TweenOptions = {}) {
