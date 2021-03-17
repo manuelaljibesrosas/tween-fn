@@ -27,17 +27,17 @@ var easings = {
     SQUARED: function (x) { return Math.pow(x, 2); },
     CUBIC: function (x) { return Math.pow(x, 3); },
     QUART: function (x) { return Math.pow(x, 4); },
+    EASE_OUT_QUART: function (x) { return 1 - Math.pow(1 - x, 4); },
     QUINT: function (x) { return Math.pow(x, 5); },
     EASE_OUT_QUINT: function (x) { return 1 - Math.pow(1 - x, 5); },
     EASE_IN_OUT_QUINT: function (x) { return x < 0.5 ? 16 * Math.pow(x, 5) : 1 - Math.pow(-2 * x + 2, 5) / 2; },
+    EASE_IN_ELASTIC: function (x) {
+        return Math.sin(((x - 1) - 0.3 / 4) * (2 * Math.PI) / 0.3) * -(Math.pow(2, 10 * (x - 1)));
+    },
     EASE_OUT_ELASTIC: function (x) {
-        var c4 = (2 * Math.PI) / 3;
-        return x === 0
-            ? 0
-            : x === 1
-                ? 1
-                : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
-    }
+        return Math.pow(2, -10 * x) * Math.sin((x - 0.3 / 4) * (2 * Math.PI) / 0.3) + 1;
+    },
+    SINE: function (x) { return Math.sin(x * Math.PI); }
 };
 exports.easings = easings;
 var directions;
@@ -135,6 +135,7 @@ var TweenPair = /** @class */ (function (_super) {
             this.completed = true;
     };
     TweenPair.prototype.reset = function () {
+        _super.prototype.reset.call(this);
         this.a.reset();
         this.b.reset();
     };

@@ -1,6 +1,6 @@
 {
   "name": "tween-fn",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A lightweight animation library which focuses on providing an expressive functional API to compose complex animations without assuming anything about your application",
   "keywords": [
     "animation",

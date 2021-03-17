@@ -7,18 +7,15 @@ const easings = {
   SQUARED: (x: number) => Math.pow(x, 2),
   CUBIC: (x: number) => Math.pow(x, 3),
   QUART: (x: number) => Math.pow(x, 4),
+  EASE_OUT_QUART: (x: number) => 1 - Math.pow(1 - x, 4),
   QUINT: (x: number) => Math.pow(x, 5),
   EASE_OUT_QUINT: (x: number) => 1 - Math.pow(1 - x, 5),
   EASE_IN_OUT_QUINT: (x: number) => x < 0.5 ? 16 * Math.pow(x, 5) : 1 - Math.pow(-2 * x + 2, 5) / 2,
-  EASE_OUT_ELASTIC: (x: number) => {
-    const c4 = (2 * Math.PI) / 3;
-
-    return x === 0
-      ? 0
-      : x === 1
-      ? 1
-      : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
-  },
+  EASE_IN_ELASTIC: (x: number) =>
+    Math.sin(((x - 1) - 0.3/4) * (2 * Math.PI) / 0.3) * -(Math.pow(2, 10 * (x - 1))),
+  EASE_OUT_ELASTIC: (x: number) =>
+    Math.pow(2, -10 * x) * Math.sin((x - 0.3 / 4) * (2 * Math.PI) / 0.3) + 1,
+  SINE: (x: number) => Math.sin(x * Math.PI),
 };
 
 enum directions {
@@ -169,6 +166,7 @@ class TweenPair extends Tween {
   }
 
   reset() {
+    super.reset();
     this.a.reset();
     this.b.reset();
   }
