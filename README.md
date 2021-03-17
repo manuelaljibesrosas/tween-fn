@@ -1,6 +1,6 @@
 # Tween-fn
 
-A tiny (2kb gzipped) library for coordinating complex animation sequences, it focuses on providing the means for writing a _description_ of a sequence using a small but powerful set of function primitives which are fully composable. Unlike existing alternatives like `GSAP` or `animejs`, `tween-fn` __does not assume anything about your application__, consequently, it doesn't know anything about the DOM or whichever JS framework you happen to prefer, this allows you to be very explicit about what you're trying to achieve
+A tiny ([~1.7kb gzipped](https://bundlephobia.com/result?p=tween-fn@1.0.2)) library for coordinating complex animation sequences, it focuses on providing the means for writing a _description_ of a sequence using a small but powerful set of function primitives which are fully composable. Unlike existing alternatives like `GSAP` or `animejs`, `tween-fn` __does not assume anything about your application__, consequently, it doesn't know anything about the DOM or whichever JS framework you happen to prefer, this allows you to be very explicit about what you're trying to achieve
 
 ## Installation
 
