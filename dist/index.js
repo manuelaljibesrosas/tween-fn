@@ -162,8 +162,12 @@ var sequence = function (ts) { return mergeAll(ts.map(function (t, i) {
     return t;
 })); };
 exports.sequence = sequence;
-function run(tween, _a) {
-    var _b = _a.now, now = _b === void 0 ? performance.now : _b, _c = _a.requestFrame, requestFrame = _c === void 0 ? requestAnimationFrame : _c;
+function run(tween, dependencies) {
+    if (dependencies === void 0) { dependencies = {}; }
+    var _a = Object.assign({
+        now: (typeof window !== 'undefined') ? performance.now.bind(performance) : null,
+        requestFrame: (typeof window !== 'undefined') ? requestAnimationFrame : null
+    }, dependencies), now = _a.now, requestFrame = _a.requestFrame;
     tween.reset();
     var startTime = now();
     var subscription = new Subscription();

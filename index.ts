@@ -200,8 +200,13 @@ interface Dependencies {
 
 function run(
   tween: Tween,
-  { now = performance.now, requestFrame = requestAnimationFrame }: Dependencies,
+  dependencies: Partial<Dependencies> = {},
 ) {
+  const { now, requestFrame } = Object.assign({
+    now: (typeof window !== 'undefined') ? performance.now.bind(performance) : null,
+    requestFrame: (typeof window !== 'undefined') ? requestAnimationFrame : null,
+  }, dependencies as Dependencies);
+
   tween.reset();
   const startTime = now();
   let subscription = new Subscription();
