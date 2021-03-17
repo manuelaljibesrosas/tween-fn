@@ -134,3 +134,24 @@ describe('change hook', () => {
     mockRaf.step({ count: 5 });
   });
 });
+
+describe('Tween', () => {
+  it('should be reusable', () => {
+    let buffer: Array<string> = [];
+    const expected = '----|----|'.split('');
+
+    const tween = unit({
+      duration: 16 * 5,
+      update: () => buffer.push('-'),
+      complete: () => buffer.push('|'),
+    });
+
+    run(tween, { now: mockRaf.now, requestFrame: mockRaf.raf });
+    mockRaf.step({ count: 5 });
+
+    run(tween, { now: mockRaf.now, requestFrame: mockRaf.raf });
+    mockRaf.step({ count: 5 });
+
+    expect(buffer).to.deep.equal(expected);
+  });
+});

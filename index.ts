@@ -129,6 +129,12 @@ class Tween {
       this.change(value, this.meta);
     }
   }
+
+  reset() {
+    this.completed = false;
+    this.count = 0;
+    this.begun = false;
+  }
 }
 
 class TweenPair extends Tween {
@@ -161,6 +167,11 @@ class TweenPair extends Tween {
     if (this.a.completed && this.b.completed)
       this.completed = true;
   }
+
+  reset() {
+    this.a.reset();
+    this.b.reset();
+  }
 }
 
 class Subscription {
@@ -182,8 +193,17 @@ const sequence = (ts: Array<Tween>): Tween => mergeAll(ts.map((t, i) => {
   return t;
 }));
 
-function run(tween: Tween) {
-  const startTime = performance.now();
+interface Dependencies {
+  now: () => number;
+  requestFrame: (callback: (currentTime: number) => void) => number;
+}
+
+function run(
+  tween: Tween,
+  { now = performance.now, requestFrame = requestAnimationFrame }: Dependencies,
+) {
+  tween.reset();
+  const startTime = now();
   let subscription = new Subscription();
 
   const tick = (currentTime: DOMHighResTimeStamp) => {
@@ -192,10 +212,10 @@ function run(tween: Tween) {
     tween.tick(elapsed);
 
     if (!tween.completed)
-      subscription.id = requestAnimationFrame(tick);
+      subscription.id = requestFrame(tick);
   };
 
-  subscription.id = requestAnimationFrame(tick);
+  subscription.id = requestFrame(tick);
 
   return subscription;
 }

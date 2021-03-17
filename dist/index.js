@@ -7,17 +7,17 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 exports.__esModule = true;
 exports.interpolatePath = exports.interpolateArray = exports.interpolate = exports.computeTransform = exports.run = exports.sequence = exports.mergeAll = exports.merge = exports.unit = exports.directions = exports.easings = exports.TweenPair = exports.Tween = void 0;
@@ -103,6 +103,11 @@ var Tween = /** @class */ (function () {
             this.change(value, this.meta);
         }
     };
+    Tween.prototype.reset = function () {
+        this.completed = false;
+        this.count = 0;
+        this.begun = false;
+    };
     return Tween;
 }());
 exports.Tween = Tween;
@@ -126,10 +131,12 @@ var TweenPair = /** @class */ (function (_super) {
             this.a.tick(elapsed);
         if (!this.b.completed)
             this.b.tick(elapsed);
-        if (this.a.completed && this.b.completed) {
-            this.complete(0, null);
+        if (this.a.completed && this.b.completed)
             this.completed = true;
-        }
+    };
+    TweenPair.prototype.reset = function () {
+        this.a.reset();
+        this.b.reset();
     };
     return TweenPair;
 }(Tween));
@@ -137,6 +144,7 @@ exports.TweenPair = TweenPair;
 var Subscription = /** @class */ (function () {
     function Subscription() {
         var _this = this;
+        this.id = 0;
         this.unsubscribe = function () { return cancelAnimationFrame(_this.id); };
     }
     return Subscription;
@@ -154,16 +162,18 @@ var sequence = function (ts) { return mergeAll(ts.map(function (t, i) {
     return t;
 })); };
 exports.sequence = sequence;
-function run(tween) {
-    var startTime = performance.now();
+function run(tween, _a) {
+    var _b = _a.now, now = _b === void 0 ? performance.now : _b, _c = _a.requestFrame, requestFrame = _c === void 0 ? requestAnimationFrame : _c;
+    tween.reset();
+    var startTime = now();
     var subscription = new Subscription();
     var tick = function (currentTime) {
         var elapsed = Math.max(0, currentTime - startTime);
         tween.tick(elapsed);
         if (!tween.completed)
-            subscription.id = requestAnimationFrame(tick);
+            subscription.id = requestFrame(tick);
     };
-    subscription.id = requestAnimationFrame(tick);
+    subscription.id = requestFrame(tick);
     return subscription;
 }
 exports.run = run;
@@ -181,7 +191,7 @@ exports.computeTransform = computeTransform;
 // interpolation utils
 var interpolate = function (progress, from, to) { return (from + ((to - from) * progress)); };
 exports.interpolate = interpolate;
-var interpolateArray = function (progress, from, to) { return from.map(function (a, i) { return (interpolate(progress, a, to[i])); }); };
+var interpolateArray = function (progress, from, to) { return (from.map(function (a, i) { return interpolate(progress, a, to[i]); })); };
 exports.interpolateArray = interpolateArray;
 var getPathFromSource = function (src) {
     var re = /[a-zA-Z]+/g;
@@ -189,7 +199,7 @@ var getPathFromSource = function (src) {
     var match = re.exec(src);
     var ret = [];
     while ((match = re.exec(src)) !== null) {
-        ret[ret.length] = __spreadArrays([src[prevIndex]], src.slice(prevIndex + 1, match.index).trim().split(' '));
+        ret[ret.length] = __spreadArray([src[prevIndex]], src.slice(prevIndex + 1, match.index).trim().split(' '));
         prevIndex = match.index;
     }
     ret[ret.length] = [src[prevIndex]];
