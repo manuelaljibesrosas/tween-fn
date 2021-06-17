@@ -20,7 +20,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     return to;
 };
 exports.__esModule = true;
-exports.interpolatePath = exports.interpolateArray = exports.interpolate = exports.computeTransform = exports.run = exports.sequence = exports.mergeAll = exports.merge = exports.unit = exports.directions = exports.easings = exports.TweenPair = exports.Tween = void 0;
+exports.interpolatePath = exports.interpolateArray = exports.interpolate = exports.computeTransform = exports.run = exports.loop = exports.sequence = exports.mergeAll = exports.merge = exports.unit = exports.directions = exports.easings = exports.TweenPair = exports.Tween = void 0;
 var noop = function () { };
 var easings = {
     LINEAR: function (x) { return x; },
@@ -142,6 +142,30 @@ var TweenPair = /** @class */ (function (_super) {
     return TweenPair;
 }(Tween));
 exports.TweenPair = TweenPair;
+var Loop = /** @class */ (function (_super) {
+    __extends(Loop, _super);
+    function Loop(t, iterations) {
+        var _this = _super.call(this, { iterations: iterations }) || this;
+        _this.tick = function (elapsed) {
+            elapsed -= _this.count * _this.t.duration;
+            if (!_this.t.completed)
+                _this.t.tick(elapsed);
+            if (_this.t.completed) {
+                if (_this.iterations > _this.count) {
+                    _this.t.reset();
+                    _this.count++;
+                }
+                else
+                    _this.completed = true;
+            }
+        };
+        _this.t = t;
+        return _this;
+    }
+    return Loop;
+}(Tween));
+var loop = function (tween, iterations) { return (new Loop(tween, iterations)); };
+exports.loop = loop;
 var Subscription = /** @class */ (function () {
     function Subscription() {
         var _this = this;

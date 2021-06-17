@@ -172,6 +172,35 @@ class TweenPair extends Tween {
   }
 }
 
+class Loop extends Tween {
+  t: Tween;
+
+  constructor(t: Tween, iterations?: number) {
+    super({ iterations });
+
+    this.t = t;
+  }
+
+  tick = (elapsed: number) => {
+    elapsed -= this.count * this.t.duration;
+
+    if (!this.t.completed)
+      this.t.tick(elapsed);
+    
+    if (this.t.completed) {
+      if (this.iterations > this.count) {
+        this.t.reset();
+        this.count++;
+      } else
+        this.completed = true;
+    }
+  };
+}
+
+const loop = (tween: Tween, iterations: number) => (
+  new Loop(tween, iterations)
+);
+
 class Subscription {
   id: number = 0;
   unsubscribe = () => cancelAnimationFrame(this.id);
@@ -287,6 +316,7 @@ export {
   merge,
   mergeAll,
   sequence,
+  loop,
   run,
   computeTransform,
   interpolate,
